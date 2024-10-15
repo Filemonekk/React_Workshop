@@ -122,8 +122,6 @@ const data = [
 	},
 ]
 
-//Destructuring
-
 function getBooks() {
 	return data
 }
@@ -132,31 +130,144 @@ function getBook(id) {
 	return data.find(d => d.id === id)
 }
 
-const book = getBook(2)
-book
+//Destructuring
+/*
+const book = getBook(3)
 
-// const title = book.title;
-// const author = book.author;
+//const title = book.title;
+//const author = book.author;
 
 const { title, author, pages, publicationDate, genres, hasMovieAdaptation } = book
+console.log(title, author, genres)
 
-console.log(author, title, genres)
-
-// const primaryGenre = genres[0];
-// const secondaryGenre = genres[1];
+//const primaryGenre = genres[0];
+//const secondaryGenre = genres[1];
 
 const [primaryGenre, secondaryGenre, ...otherGenres] = genres
 console.log(primaryGenre, secondaryGenre, otherGenres)
 
-const newGenres = ['epic fantasy', ...genres]
+//...spread
+
+const newGenres = [...genres, 'epic fantasy']
 newGenres
 
-const updatedBook = {
-	...book,
-	// Adding a new property
-	moviePublicationDate: '2001-12-19',
-
-	// Overwriting an existing property
-	pages: 1210,
-}
+const updatedBook = { ...book, moviePublicationDate: '2001-12-19', pages: 1210 }
 updatedBook
+
+// Template Literals
+const summary = `${title}, a ${pages}-page long is a book, was written by ${author}, and published in ${
+	publicationDate.split('-')[0]
+}. The book has ${hasMovieAdaptation ? '' : 'not'} been adapted as a move`
+summary
+
+//Operator trójargumentowy
+
+const pagesRange = pages > 1000 ? 'over a thousand' : 'less than 1000'
+pagesRange
+
+//Arrow functions
+
+//function getYear(str) {
+//	return str.split('-')[0]       //deklaracja funkcji
+//}
+//console.log(getYear(publicationDate))
+
+const getYear = str => str.split('-')[0] //wyrazenie funkcyjne
+
+console.log(getYear(publicationDate))
+
+//opertatory
+
+//&&
+// gdy jest true - dostajemy w odpowiedzi drugą wartość
+//gdy jest false otrzymuemy pierwszą wartość
+
+console.log(true && 'Some string')
+console.log(false && 'Some string')
+console.log(hasMovieAdaptation && 'This book has a movie')
+
+// falsy: 0, ', null, undefined
+console.log('jonas' && 'some string')
+console.log(0 && 'some strig')
+
+// || lub
+
+//gdy jest true, zwraca pierwszą wartość
+
+console.log(true || 'some string')
+console.log(false || 'some string')
+
+console.log(book.translations.spanish)
+
+const spanishTranslation = book.translations.spanish || 'NOT TRANSLATED'
+spanishTranslation
+
+//console.log(book.reviews.librarything.reviewsCount)
+//const countWrong = book.reviews.librarything.reviewsCount || 'no data' //gdy w pierwszym członie jest 0 (czyli falsy- odpowiedż wskazuje na 'no data' co nie jest //prawdą, bo 0 to wynik poprawny)
+//countWrong
+
+//// ABY UWZGLĘDNIĆ 0!!!!!!!
+
+//const count = book.reviews.librarything.reviewsCount ?? 'no data' // ?? zwraca drugą wartość gdy wynik to null lub undefined
+//count
+
+// chainig operator
+
+function getTotalReviewCount(book) {
+	const goodreads = book.reviews.goodreads.reviewsCount
+	const librarything = book.reviews.librarything?.reviewsCount ?? 0
+	librarything
+	return goodreads + librarything
+}
+console.log(getTotalReviewCount(book));
+
+*/
+
+//MAP method
+
+function getTotalReviewCount(book) {
+	const goodreads = book.reviews.goodreads.reviewsCount
+	const librarything = book.reviews.librarything?.reviewsCount ?? 0
+	librarything
+	return goodreads + librarything
+}
+
+const books = getBooks()
+const x = [1, 2, 3, 4, 5].map(el => el * 2)
+console.log(x)
+
+const titles = books.map(book => book.title)
+console.log(titles)
+
+const essentialData = books.map(book => ({
+	title: book.author,
+	author: book.author,
+	reviewsCount: getTotalReviewCount(book),
+}))
+console.log(essentialData)
+
+// FILTER method
+
+const longBooks = books.filter(book => book.pages > 500).filter(book => book.hasMovieAdaptation)
+longBooks
+
+const adventureBooks = books.filter(books => books.genres.includes('adventure')).map(book => book.title)
+adventureBooks
+
+// REDUCE method
+
+const pagesAllBooks = books.reduce((sum, book) => sum + book.pages, 0)
+pagesAllBooks
+
+// SORT method - mutuhe orginalną tablicę, ale jest sztuczka
+
+const xx = [3, 7, 1, 9, 6]
+
+const sorted = xx.slice().sort((a, b) => a - b)
+sorted
+xx
+
+//tworzymy kopię tablicy poprzed sosanie metody slice()
+
+const sortedByPages = books.slice().sort((a, b) => b.pages - a.pages)
+sortedByPages

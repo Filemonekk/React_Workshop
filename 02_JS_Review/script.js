@@ -225,6 +225,7 @@ console.log(getTotalReviewCount(book));
 
 //MAP method
 
+/*
 function getTotalReviewCount(book) {
 	const goodreads = book.reviews.goodreads.reviewsCount
 	const librarything = book.reviews.librarything?.reviewsCount ?? 0
@@ -271,3 +272,39 @@ xx
 
 const sortedByPages = books.slice().sort((a, b) => b.pages - a.pages)
 sortedByPages
+
+// Dodawanie obiektu
+
+const newBook = {
+	id: 6,
+	title: 'Harry Potter and the Chamber of Secrets',
+	author: 'J.K.Rowling',
+}
+
+const booksAfterAdd = [...books, newBook]
+booksAfterAdd
+
+// Usuwanie obiektu
+
+const booksAfterDelete = booksAfterAdd.filter(book => book.id !== 3)
+booksAfterDelete
+
+// Aktualizowanie objektu
+
+const booksAfterUpdate = booksAfterDelete.map(book => (book.id === 1 ? { ...book, pages: 300 } : book))
+booksAfterUpdate
+ */
+
+//fetch('https://jsonplaceholder.typicode.com/todos')
+//	.then(res => res.json())
+//	.then(data => console.log(data))
+//console.log('jonas')
+
+async function getTodos() {
+	const res = await fetch('https://jsonplaceholder.typicode.com/todos')
+	const data = await res.json()
+	console.log(data)
+
+	const todos = getTodos()
+	console.log(todos)
+}

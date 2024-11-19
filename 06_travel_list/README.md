@@ -2,7 +2,6 @@
 
 A simple React application that helps users create and manage a packing list for their trips. With this app, you can add items to pack, mark them as packed, and delete items if needed. It's a practical tool for staying organized before traveling!
 
-
 ## 🚀 Features
 
 - **Add items**: Specify the item description and quantity to add it to your packing list.

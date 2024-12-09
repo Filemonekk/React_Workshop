@@ -50,11 +50,12 @@ const average = arr => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 
 const KEY = 'bfee9e04'
 
 export default function App() {
+	const [query, setQuery] = useState('')
 	const [movies, setMovies] = useState([])
 	const [watched, setWatched] = useState([])
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
-	const query = 'interstellar'
+	const tempQery = 'interstellar'
 
 	//Converting promise to async function
 	//useEffect(function () {
@@ -67,6 +68,7 @@ export default function App() {
 		async function fetchMovies() {
 			try {
 				setIsLoading(true)
+				setError('')
 				const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
 
 				if (!res.ok) throw new Error('Something went wrong with fetching movies')
@@ -81,14 +83,22 @@ export default function App() {
 				setIsLoading(false)
 			}
 		}
+
+		//usuwanie movie not found//
+		if (query.length <3) {
+			setMovies([]);
+			setError('');
+			return;
+}
+
 		fetchMovies()
-	}, [])
+	}, [query])
 
 	return (
 		<>
 			<NavBar>
 				<Logo />
-				<Search />
+				<Search query = {query} setQuery={setQuery} />
 				<NumResults movies={movies} />
 			</NavBar>
 			<Main>
@@ -133,8 +143,7 @@ function Logo() {
 	)
 }
 
-function Search() {
-	const [query, setQuery] = useState('')
+function Search({query, setQuery}) {
 	return (
 		<input
 			className='search'

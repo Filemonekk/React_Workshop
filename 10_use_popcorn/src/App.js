@@ -68,10 +68,11 @@ export default function App() {
 			try {
 				setIsLoading(true)
 				const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+
 				if (!res.ok) throw new Error('Something went wrong with fetching movies')
 				const data = await res.json()
+				if (data.Response === 'False') throw Error('Movie not found!')
 				setMovies(data.Search)
-			
 			} catch (err) {
 				console.log(err.message)
 				setError(err.message)

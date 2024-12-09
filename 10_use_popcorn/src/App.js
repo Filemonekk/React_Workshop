@@ -55,6 +55,7 @@ export default function App() {
 	const [watched, setWatched] = useState([])
 	const [isLoading, setIsLoading] = useState(false)
 	const [error, setError] = useState('')
+	const [selectedId, setSelectedId] = useState(null)
 	const tempQery = 'interstellar'
 
 	//Converting promise to async function
@@ -64,41 +65,44 @@ export default function App() {
 	//		.then(data => setMovies(data.Search));
 	//}, []);
 
-	useEffect(function () {
-		async function fetchMovies() {
-			try {
-				setIsLoading(true)
-				setError('')
-				const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+	useEffect(
+		function () {
+			async function fetchMovies() {
+				try {
+					setIsLoading(true)
+					setError('')
+					const res = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
 
-				if (!res.ok) throw new Error('Something went wrong with fetching movies')
-				const data = await res.json()
-				if (data.Response === 'False') throw Error('Movie not found!')
-				setMovies(data.Search)
-			} catch (err) {
-				console.log(err.message)
-				setError(err.message)
-				setIsLoading(false)
-			} finally {
-				setIsLoading(false)
+					if (!res.ok) throw new Error('Something went wrong with fetching movies')
+					const data = await res.json()
+					if (data.Response === 'False') throw Error('Movie not found!')
+					setMovies(data.Search)
+				} catch (err) {
+					console.log(err.message)
+					setError(err.message)
+					setIsLoading(false)
+				} finally {
+					setIsLoading(false)
+				}
 			}
-		}
 
-		//usuwanie movie not found//
-		if (query.length <3) {
-			setMovies([]);
-			setError('');
-			return;
-}
+			//usuwanie movie not found//
+			if (query.length < 3) {
+				setMovies([])
+				setError('')
+				return
+			}
 
-		fetchMovies()
-	}, [query])
+			fetchMovies()
+		},
+		[query]
+	)
 
 	return (
 		<>
 			<NavBar>
 				<Logo />
-				<Search query = {query} setQuery={setQuery} />
+				<Search query={query} setQuery={setQuery} />
 				<NumResults movies={movies} />
 			</NavBar>
 			<Main>
@@ -109,8 +113,14 @@ export default function App() {
 					{error && <ErrorMessage message={error} />}
 				</Box>
 				<Box>
-					<WatchedSumary watched={watched} />
-					<WatchedMoviesList watched={watched} />
+					{selectedId ? (
+						<MovieDetails selectedId={selectedId} />
+					) : (
+						<>
+							<WatchedSummary watched={watched} />
+							<WatchedMoviesList watched={watched} />
+						</>
+					)}
 				</Box>
 			</Main>
 		</>
@@ -143,7 +153,7 @@ function Logo() {
 	)
 }
 
-function Search({query, setQuery}) {
+function Search({ query, setQuery }) {
 	return (
 		<input
 			className='search'
@@ -178,6 +188,11 @@ function Box({ children }) {
 		</div>
 	)
 }
+
+function MovieDetails({ selectedId }) {
+	return <div className='details'>{selectedId}</div>
+}
+
 /*
 function WatchedBox() {
 	const [watched, setWatched] = useState(tempWatchedData)
@@ -224,7 +239,7 @@ function Movie({ movie }) {
 	)
 }
 
-function WatchedSumary({ watched }) {
+function WatchedSummary({ watched }) {
 	const avgImdbRating = average(watched.map(movie => movie.imdbRating))
 	const avgUserRating = average(watched.map(movie => movie.userRating))
 	const avgRuntime = average(watched.map(movie => movie.runtime))
